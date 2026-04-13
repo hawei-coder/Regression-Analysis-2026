@@ -13,7 +13,7 @@
 
 下面是两组实验的估计点对比图：
 
-![Orthogonal vs Collinear Covariance Scatter Plot](../students/05_qyz/src/week05/covariance_ellipses.png)
+![Orthogonal vs Collinear Covariance Scatter Plot](../src/week05/covariance_ellipses.png)
 
 图中：
 - 蓝色点表示实验 A 的 \(\hat{\beta}_1\) 与 \(\hat{\beta}_2\) 估计点。
