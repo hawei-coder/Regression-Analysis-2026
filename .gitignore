@@ -23,3 +23,12 @@
 **/*.ipynb
 
 **/*.npz
+
+# Data files - DO NOT COMMIT
+*.csv
+*.xlsx
+*.xls
+data/
+results/
+*.png
+*.jpg
