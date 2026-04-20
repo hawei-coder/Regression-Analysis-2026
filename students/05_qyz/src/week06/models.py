@@ -1,6 +1,6 @@
 """
 Task 1: The Inference Engine - Custom OLS Regression
-面向对象实现，支持多实例独立运行
+面向对象Class实现，支持多实例独立运行
 """
 
 import numpy as np
@@ -162,59 +162,3 @@ class CustomOLS:
         p_value = 1 - stats.f.cdf(f_stat, q, self.df_resid_)
 
         return {"f_stat": f_stat, "p_value": p_value}
-
-
-# ===================================================================
-# 过程式实现（仅供对比，不推荐使用）
-# ===================================================================
-
-
-def procedural_fit(X, y, fit_intercept=True):
-    """过程式拟合"""
-    if fit_intercept:
-        X = np.column_stack([np.ones(X.shape[0]), X])
-
-    XtX_inv = np.linalg.inv(X.T @ X)
-    beta_hat = XtX_inv @ X.T @ y
-    residuals = y - X @ beta_hat
-    RSS = np.sum(residuals**2)
-    df_resid = X.shape[0] - X.shape[1]
-    sigma2 = RSS / df_resid
-    cov_matrix = sigma2 * XtX_inv
-
-    return beta_hat, cov_matrix, sigma2, df_resid, X
-
-
-def procedural_predict(X, beta_hat, fit_intercept=True):
-    """过程式预测"""
-    if fit_intercept:
-        X = np.column_stack([np.ones(X.shape[0]), X])
-    return X @ beta_hat
-
-
-def procedural_score(X, y, beta_hat, fit_intercept=True):
-    """过程式计算R²"""
-    y_pred = procedural_predict(X, beta_hat, fit_intercept)
-    SSE = np.sum((y - y_pred) ** 2)
-    SST = np.sum((y - np.mean(y)) ** 2)
-    return 1 - SSE / SST
-
-
-def procedural_f_test(C, d, beta_hat, cov_matrix, sigma2, df_resid, X_design):
-    """过程式F检验"""
-    C = np.asarray(C)
-    d = np.asarray(d).reshape(-1, 1)
-    q = C.shape[0]
-
-    XtX_inv = np.linalg.inv(X_design.T @ X_design)
-    C_beta = C @ beta_hat.reshape(-1, 1)
-    diff = C_beta - d
-
-    C_XtX_inv_Ct = C @ XtX_inv @ C.T
-    C_XtX_inv_Ct_inv = np.linalg.inv(C_XtX_inv_Ct)
-
-    quad_form = diff.T @ C_XtX_inv_Ct_inv @ diff
-    f_stat = quad_form.item() / (q * sigma2)
-    p_value = 1 - stats.f.cdf(f_stat, q, df_resid)
-
-    return {"f_stat": f_stat, "p_value": p_value}
