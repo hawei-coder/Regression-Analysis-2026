@@ -31,26 +31,11 @@ noise3   1.017638
 - x1, x2, x3 的 VIF 都远高于 10，表示严重的多重共线性，符合设计预期。
 - x4, x5 及噪声特征的 VIF 接近 1，表示它们相对独立。
 
-## 3.1 相关矩阵可视化
+## 4. 相关矩阵可视化
 
 ![相关矩阵](figures/synthetic_corr_matrix.png)
 
 **图表解读**：相关矩阵热力图展示了特征间的相关性。x1, x2, x3 呈现深色（接近 1），说明它们高度正相关；噪声特征与其他特征的相关性接近 0（浅色）。
-
-## 4. 稳定性对比：OLS vs Ridge
-
-通过 50 次不同随机切分，比较 OLS 与 Ridge 对 x1,x2,x3 的系数波动。
-
-![系数稳定性对比](figures/stability_comparison.png)
-
-**图表解读**：OLS（蓝色）系数波动幅度大（±3 到±1 范围），而 Ridge（橙色）系数波动很小（1-2 范围），充分证明正则化显著提升了系数估计的稳定性。
-
-feature  ols_mean  ols_std  ridge_mean  ridge_std
-     x1  3.324758 0.506231    1.499157   0.050791
-     x2 -1.485952 0.548722    1.016715   0.063563
-     x3  2.092337 0.481687    1.385682   0.056684
-
-**数值发现**：OLS 系数标准差远大于 Ridge（约 10 倍），验证正则化通过 L2 罚项将共线性特征的系数"绑定"，大幅降低不稳定性。
 
 ## 5. GridSearchCV 最优参数寻优
 
@@ -60,7 +45,7 @@ feature  ols_mean  ols_std  ridge_mean  ridge_std
 
 ![GridSearchCV 曲线](figures/gridsearch_curves.png)
 
-**图表解读**：Ridge 曲线平缓，表现稳定；Lasso 在小 alpha 处最优，之后快速下降（过度正则化）。两条曲线的不同形态反映了正则化策略的本质差异：Ridge 均匀缩小所有系数，而 Lasso 倾向于将某些系数压为 0。
+**图表解读**：Ridge 曲线平缓，表现稳定；Lasso 在小 alpha 处最优，之后 RMSE 快速上升。两条曲线的不同形态反映了正则化策略的本质差异：Ridge 均匀缩小所有系数，而 Lasso 倾向于将某些系数压为 0。
 
 ![ElasticNet 曲线](figures/gridsearch_curves_enet.png)
 
@@ -69,10 +54,10 @@ feature  ols_mean  ols_std  ridge_mean  ridge_std
 ## 6. 模型性能比较与分析
 
      model     RMSE      MAE     MAPE
-       OLS 1.450887 1.176384 5.662117
-     Ridge 1.446735 1.171361 5.648779
-     Lasso 1.437080 1.169650 5.655734
-ElasticNet 1.438326 1.169113 5.648687
+       OLS   1.4508    1.1763    5.6621
+     Ridge   1.4467    1.1713    5.6487
+     Lasso   1.4370    1.1696    5.6557
+     ElasticNet 1.4383 1.1691    5.6486
 
 **性能解读**：
 - RMSE：Lasso 最低 (1.437)，其次是 Ridge (1.447)，OLS 最高 (1.451)。虽然差异不大，但正则化的优势明显。
